@@ -8,7 +8,7 @@ CFLAGS= -g -Wall
 # -Wall turns on most, but not all, complier warnings
 
 IDIR = ../libfdr
-# define any directories containing header file other then /usr/include
+# define any directories containing header file other then /usr/include (../bt-5.0.0/inc)
 INCLUDES = -I $(IDIR)
 
 # define any libraries to link into executable:
@@ -22,6 +22,7 @@ LIBS = -lfdr
 # ../..lib means up 2 level then search for /lib
 LDIR = ../libfdr
 LFLAGS = -L $(LDIR)
+# (../bt-5.0.0/lib)
 
 # This uses Suffix Replacement within a macro:
 #   $(name:string1=string2)
