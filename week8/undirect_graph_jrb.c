@@ -93,13 +93,13 @@ void BFS(Graph graph,int start,int stop,void (*func)(int)) {
     int v=jval_i(node->val);
     dll_delete_node(node);  //dequeue
     for (i=0;i<n;i++) 
-      if (key[i]==v) break;
-    if (mark[i]==0) {
-      func(v);
-      mark[i]=1;
-      if (v==stop) {free_dllist(queue);return;}
+      if (key[i]==v) break; // find key (i) corresponding with node value
+    if (mark[i]==0) { // if unvisited
+      func(v); //print node value
+      mark[i]=1; // mark as visited
+      if (v==stop) {free_dllist(queue);return;} 
       int adja[n];
-      int total=getAdjacentVertices(graph,v,adja);
+      int total=getAdjacentVertices(graph,v,adja); // get adjacent vertices
       for (k=0;k<total;k++) 
 	for (j=0;j<n;j++) 
 	  if (key[j]==adja[k] && mark[j]==0) dll_append(queue,new_jval_i(adja[k]));
@@ -138,13 +138,13 @@ void DFS(Graph graph,int start,int stop,void (*func)(int)) {
     int v=jval_i(node->val);
     dll_delete_node(node);  //pop
     for (i=0;i<n;i++) 
-      if (key[i]==v) break;
-    if (mark[i]==0) {
-      func(v);
-      mark[i]=1;
+      if (key[i]==v) break; // find key (i) corresponding with node value
+    if (mark[i]==0) { //if unvisited
+      func(v); //print node value
+      mark[i]=1; //mark as visited
       if (v==stop) {free_dllist(stack);return;}
       int adja[n];
-      int total=getAdjacentVertices(graph,v,adja);
+      int total=getAdjacentVertices(graph,v,adja); // get adjacent vertices
       for (k=0;k<total;k++) 
 	for (j=0;j<n;j++) 
 	  if (key[j]==adja[k] && mark[j]==0) dll_append(stack,new_jval_i(adja[k])); //push
@@ -153,3 +153,145 @@ void DFS(Graph graph,int start,int stop,void (*func)(int)) {
   free_dllist(stack);
 }
 
+void BFS2(Graph g,int start,int stop,void(*func)(int)) {
+  JRB check1 = jrb_find_int(g,start);
+  JRB check2 = jrb_find_int(g,stop);
+  if(check1 == NULL ) {
+    printf("Graph does not have vertex %d\n", start);
+    return;
+  }
+  if(stop != -1 && check2 == NULL) {
+    printf("Graph does not have vertex %d\n", stop);
+    return;
+  }
+  // Create a graph name 'visited' in which each node's key is
+  // a vertex, and it's key indicate whether the vertex has been
+  // visited (1) or not (0)
+  Graph visited = createGraph();
+  Graph tmp;
+  int V = 0;
+  jrb_traverse(tmp,g) {
+    V++;
+    jrb_insert_int(visited, jval_i(tmp->key), new_jval_i(0));
+  }
+  int output[V];
+  
+  // Create a queue and enqueue the first element
+  Dllist queue = new_dllist();
+  dll_append(queue,new_jval_i(start));
+  // Traversing
+  while(dll_empty(queue) != 1) {
+    // Take first element in the queue
+    Dllist node = dll_first(queue);
+    int key = jval_i(node->val);
+    // Dequeue this element
+    dll_delete_node(node);
+    
+    tmp = jrb_find_int(visited, key);
+    if(jval_i(tmp->val) == 0) {
+      // Pass the vertex to external function
+      func(key);
+      // Mark this element as 'visited'
+      jrb_delete_node(tmp);
+      jrb_insert_int(visited, key, new_jval_i(1));		
+    }
+    
+    // If this is the required vertex, return
+    if (key == stop) {
+      free_dllist(queue);
+      jrb_free_tree(visited);
+      return;
+    }
+    int i;
+    int count = getAdjacentVertices(g, key, output);
+    for (i = 0; i < count; i++)
+      {
+	JRB ptr = jrb_find_int(visited, output[i]);
+	if(jval_i(ptr->val) == 0)
+	  dll_append(queue,new_jval_i(output[i])); 
+      }
+    
+  }
+  free_dllist(queue);
+  jrb_free_tree(visited);
+}
+
+// DFS ..........................................................
+
+void DFS2(Graph g, int start, int stop, void (*func)(int)) {
+  JRB check1 = jrb_find_int(g,start);
+  JRB check2 = jrb_find_int(g,stop);
+  if(check1 == NULL ) {
+    printf("Graph does not have vertex %d\n", start);
+    return;
+  }
+  if(stop != -1 && check2 == NULL) {
+    printf("Graph does not have vertex %d\n", stop);
+    return;
+  }
+  
+  // Create a graph name 'visited' in which each node's key is
+  // a vertex, and it's key indicate whether the vertex has been
+  // visited (1) or not (0)
+  Graph visited = createGraph();
+  Graph tmp;
+  int V = 0;
+  jrb_traverse(tmp, g) {
+    V++;
+    jrb_insert_int(visited, jval_i(tmp->key), new_jval_i(0));
+  }
+  int output[V];
+  
+  // Create a stack and push the first element
+  Dllist stack = new_dllist();
+  dll_append(stack, new_jval_i(start));
+  
+  // Traversing
+  while(dll_empty(stack) != 1) {
+    // Take the top element in the stack
+    Dllist dll_tmp = dll_last(stack);
+    int key = jval_i(dll_tmp->val);
+    
+    tmp = jrb_find_int(visited, key);
+    if(jval_i(tmp->val) == 0) {
+      // Pass the vertex to external function
+      func(key);
+      // Mark this element as 'visited'
+      jrb_delete_node(tmp);
+      jrb_insert_int(visited, key, new_jval_i(1));
+    } else {
+      // Pop this element
+      dll_delete_node(dll_tmp);
+    }
+    
+    // If this is the required vertex, return
+    if (key == stop) {
+      free_dllist(stack);
+      jrb_free_tree(visited);
+      return;
+    }
+    int i;
+    int count = getAdjacentVertices(g, key, output);
+    for (i = 0 ; i < count; i++)
+      {
+	// If the vertice has not been visited, push it
+	tmp = jrb_find_int(visited, output[i]);
+	if (jval_i(tmp->val) == 0) {
+	  key = jval_i(tmp->key);
+	  dll_append(stack, new_jval_i(key));
+	}
+      }
+    
+    // JRB u_node = jrb_find_int(g, key);
+    // if(u_node == NULL) continue;
+    
+    // JRB v_connect_to_u = (JRB)jval_v(u_node->val);
+    // jrb_rtraverse(tmp, v_connect_to_u) {
+    // 	JRB ptr = jrb_find_int(visited, tmp->key.i);
+    // 	if(jval_i(ptr->val) == 0)
+    // 		dll_append(stack, new_jval_i(tmp->key.i));
+    // }
+  }
+  free_dllist(stack);
+  jrb_free_tree(visited);
+}

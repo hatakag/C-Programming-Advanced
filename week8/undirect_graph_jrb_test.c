@@ -20,9 +20,14 @@ int main(){
   printf("\nn=%d\n",n);
   int j=adjacent(g,3,1);
   printf("j=%d\n",j);
-  BFS(g,1,6,printVertex);
+  BFS(g,1,-1,printVertex);
   printf("\n");
-  DFS(g,1,6,printVertex);
+  DFS(g,1,-1,printVertex);
+  printf("\n");
+  printf("\n");
+  BFS2(g,1,-1,printVertex);
+  printf("\n");
+  DFS2(g,1,-1,printVertex);
   printf("\n");
   dropGraph(g);
   return 0;
