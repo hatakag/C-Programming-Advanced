@@ -40,7 +40,6 @@ int main(int argc, char* argv[]) {
       //printf("addEdge %d %d\n",atoi(id+strlen(id)-3),id_tmp);
     }
     count++;
-    if (feof(fp)) break;
   }
   fclose(fp);
   printf("%d\n",count);
