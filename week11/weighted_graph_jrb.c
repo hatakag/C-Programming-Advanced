@@ -446,7 +446,7 @@ void DFS2(Graph g, int start, int stop, void (*func)(int)) {
   jrb_free_tree(visited);
 }
 
-double getEdgeValue(Graph g,int v1,int v2) { // return INFINITIVE_VALUE if no edge between v1 and v2
+double getEdgeValue(Graph graph,int v1,int v2) { // return INFINITIVE_VALUE if no edge between v1 and v2
   if (getVertex(graph,v1)==NULL) {
     printf("Add Vertex %d first\n",v1);
     return INFINITIVE_VALUE;
@@ -476,8 +476,8 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
   if (!node2) {printf("Do not exist node %d\n",t);return INFINITIVE_VALUE;}
   //check outdegree start and indegree stop
   int temp[100];
-  if (outdegree(graph,s,temp)==0) printf("Cannot go out node %d\n",s);
-  if (indegree(graph,t,temp)==0) printf("Cannot go in node %d\n",t);
+  if (outdegree(graph,s,temp)==0) {printf("Cannot go out node %d\n",s);return INFINITIVE_VALUE;}
+  if (indegree(graph,t,temp)==0) {printf("Cannot go in node %d\n",t);return INFINITIVE_VALUE;}
   //number of node in graph
   int n=0;
   if (!jrb_empty(graph.vertices)) {
@@ -489,19 +489,89 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
   // Queue
   Dllist queue=new_dllist();
 
-  // set all distance to node is infinitive and ist parent is nil  
+  // set all node's weight (distace to node) is infinitive and ist parent is nil  
   JRB setd=make_jrb();
   JRB setparent=make_jrb();
   JRB tmp;
-  jrb_traverse(tmp,g.vertices) {
+  jrb_traverse(tmp,graph.vertices) {
     jrb_insert_int(setd,jval_i(tmp->key),new_jval_d(INFINITIVE_VALUE));
-    jrb_insert_int(setparent,jval_i(tmp->key),new_jval_v(NULL));
+    jrb_insert_int(setparent,jval_i(tmp->key),new_jval_i(-1));
     dll_append(queue,tmp->key); //enqueue
   }
+  
+  // set d of s = 0
   tmp=jrb_find_int(setd,s);
   tmp->val=new_jval_d(0);
   
   while (dll_empty(queue)!=1) { //not empty queue
     
+    /*-------------Extract Min In Queue--------------*/
+    Dllist ptr;
+    int id_min;
+    double min=INFINITIVE_VALUE;
+    JRB node;
+    dll_traverse(ptr,queue) { //all elements in queue 
+      node = jrb_find_int(setd,jval_i(ptr->val)); //find node in graph (id) in setd tree to take its distance
+      if (jval_d(node->val)<min) {
+	min=jval_d(node->val); //find the minimum distance of elements in queue 
+	id_min=jval_i(ptr->val); //node (id) with min d
+	//printf("%d %f\n",id_min,min);
+      }
+    }
+    
+    dll_traverse(ptr,queue) { //dequeue the node id_min
+      if (id_min==jval_i(ptr->val)) {dll_delete_node(ptr);break;}
+      //printf("%d %d\n",id_min,jval_i(ptr->val));
+    }
+    /*-----------------------------------------------*/
+    
+
+    /* stop if id_min is t (reached t with min d )
+       or min value of all remain elements in queue is infinitive 
+       (can not go in all remain elements, no path from s to t)  */
+    if (id_min==t || min==INFINITIVE_VALUE) break;
+
+    
+    // Relaxing edges and Modify key
+    int i,total,adja_out[n];
+    total=outdegree(graph,id_min,adja_out); //all outdegree of node id_min
+    for (i=0;i<total;i++) { //find outdegree of node id_min with min d
+      node = jrb_find_int(setd,adja_out[i]); 
+      double d=getEdgeValue(graph,id_min,adja_out[i]);
+      //printf("%d %f %f %f\n",adja_out[i],jval_d(node->val),min,d);
+      if (jval_d(node->val) > min + d) {
+	node->val=new_jval_d(min + d);
+	JRB node2 = jrb_find_int(setparent,adja_out[i]);
+	node2->val=new_jval_i(id_min);
+      }
+    }
+  }
+  
+  free_dllist(queue);
+  
+  //
+  int x,i=0;
+  tmp=jrb_find_int(setd,t);
+  if (jval_d(tmp->val)==INFINITIVE_VALUE) {
+    *path=0;*length=0;
+    jrb_free_tree(setd);
+    jrb_free_tree(setparent);
+    return INFINITIVE_VALUE;
+  } else {
+    x=t;
+    while (x!=s && x!=-1) {
+      JRB temp=jrb_find_int(setparent,x);
+      path[i++]=x;
+      x=jval_i(temp->val);
+    }
+    path[i]=s;
+    *length=i+1;
+    for (i=0;i<*length/2;i++) {
+      x=path[i];path[i]=path[*length-i-1];path[*length-i-1]=x;
+    }
+    int d=jval_d(tmp->val);
+    jrb_free_tree(setd);
+    jrb_free_tree(setparent);
+    return d;//jval_d(tmp->val);
   }
 }
