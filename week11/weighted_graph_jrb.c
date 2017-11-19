@@ -489,7 +489,7 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
   // Queue
   Dllist queue=new_dllist();
 
-  // set all node's weight (distace to node) is infinitive and ist parent is nil  
+  // set all node's weight (distace to node) is infinitive and ist parent is null(-1)  
   JRB setd=make_jrb();
   JRB setparent=make_jrb();
   JRB tmp;
@@ -559,13 +559,12 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
     return INFINITIVE_VALUE;
   } else {
     x=t;
-    while (x!=s && x!=-1) {
+    while (x!=-1) { //Null
       JRB temp=jrb_find_int(setparent,x);
       path[i++]=x;
       x=jval_i(temp->val);
     }
-    path[i]=s;
-    *length=i+1;
+    *length=i;
     for (i=0;i<*length/2;i++) {
       x=path[i];path[i]=path[*length-i-1];path[*length-i-1]=x;
     }
