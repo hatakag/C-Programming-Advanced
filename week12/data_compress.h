@@ -8,10 +8,11 @@
 #include "jrb.h"
 #include "dllist.h"
 #include "weighted_graph_jrb.h"
+#include "priority_queue.h"
 
 typedef struct {
    Graph graph;
-   JRB root;
+   Queue root;
 } HuffmanTree;
 
 typedef struct {
@@ -19,7 +20,7 @@ typedef struct {
   unsigned char bits[2];
 } Coding;
 
-Coding huffmanTable[256];
+//Coding huffmanTable[256];
 HuffmanTree makeHuffman (char * buffer, int size);
 void createHuffmanTable(HuffmanTree htree, Coding* htable);
 void compress(char * buffer, int size, char* huffman, int* nbit);
