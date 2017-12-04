@@ -7,7 +7,7 @@
 #include "jval.h"
 #include "jrb.h"
 #include "dllist.h"
-#include "weighted_graph_jrb.h"
+#include "graph.h"
 #include "priority_queue.h"
 
 typedef struct {
