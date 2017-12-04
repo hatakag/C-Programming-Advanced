@@ -1,0 +1,83 @@
+Ben Xe Giap Bat
+807 Giai Phong
+500
+
+807 Giai Phong
+649 Giai Phong
+500
+
+649 Giai Phong
+487 Giai Phong
+450
+
+487 Giai Phong
+175 Giai Phong
+900
+
+175 Giai Phong
+17 Giai Phong
+350
+
+17 Giai Phong
+394 Le Duan
+600
+
+394 Le Duan
+326 Le Duan
+500
+
+326 Le Duan
+Doi dien Bo Cong An
+850
+
+Doi dien Bo Cong An
+Cung VHHN Viet Xo
+350
+
+Cung VHHN Viet Xo
+67 Tran Hung Dao
+550
+
+67 Tran Hung Dao
+35 Tran Hung Dao
+550
+
+35 Tran Hung Dao
+13A Tran Hung Dao
+350
+
+13A Tran Hung Dao
+2E Tran Hung Dao
+350
+
+2E Tran Hung Dao
+BDX Tran Khanh Du
+650
+
+BDX Tran Khanh Du
+Chuong Duong Do
+600
+
+Chuong Duong Do
+Nga 3 Tran Quang Khai
+450
+
+Nga 3 Tran Quang Khai
+O Quan Chuong
+800
+
+O Quan Chuong
+Tong cuc Hai Quan
+2100
+
+Tong cuc Hai Quan
+Cong ty Cau 5 Thang Long
+600
+
+Cong ty Cau 5 Thang Long
+447 Ngoc Lam
+1000
+
+447 Ngoc Lam
+Ben xe Gia Lam
+400

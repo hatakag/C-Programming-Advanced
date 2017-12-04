@@ -1,0 +1,48 @@
+Trung chuyen Cau Giay 
+112 Cau Giay 
+700
+112 Cau Giay
+250 Cau Giay
+500
+250 Cau Giay
+370 Cau Giay
+240
+370 Cau Giay
+36 Xuan Thuy
+700
+36 Xuan Thuy
+136 Xuan Thuy
+900
+136 Xuan Thuy
+6 Ho Tung Mau
+200
+6 Ho Tung Mau
+264 Ho Tung Mau
+2100
+264 Ho Tung Mau
+135 To 3 Duong 32
+1900
+135 To 3 Duong 32
+22 Nhon
+2500
+22 Nhon
+Cong ty CPXD Thang Long
+750
+Cong ty CPXD Thang Long
+Dai hoc Thanh Do
+1600
+Dai hoc Thanh Do
+Buu dien Hoai Duc
+750
+Buu dien Hoai Duc
+THPT Binh Minh
+1200
+THPT Binh Minh
+XN may My Anh
+900
+XN may My Anh
+Doi dien chua Dien Phuc
+750
+Doi dien chua Dien Phuc
+BX Dan Phuong
+1800
