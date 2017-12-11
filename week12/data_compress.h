@@ -24,6 +24,9 @@ typedef struct {
 HuffmanTree makeHuffman (char * buffer, int size);
 void createHuffmanTable(HuffmanTree htree, Coding* htable);
 void compress(char * buffer, int size, char* huffman, int* nbit);
-void addHuffmanChar(char * ch, Coding* htable, char* huffman, int* nbit);
+void addHuffmanChar(char ch, Coding * htable, char* huffman, int* nbit);
+JRB makeStatsTree(char *buffer, int size);
+unsigned int encodeChar(Graph g,int root,int ch,int *size);
+char* getBits(unsigned char bits,int size);
 
 #endif

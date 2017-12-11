@@ -7,17 +7,23 @@ Graph createGraph() {
   return g;
 }
 
-int compare(Jval a,Jval b) {
-  if (jval_i(a)<jval_i(b)) return -1;
-  else return 1;
-}
-
 void addVertex(Graph graph, int id, int name) {
-  jrb_insert_gen(graph.vertices,new_jval_i(id),new_jval_i(name),compare);
+  JRB node=jrb_find_int(graph.vertices,id);
+  if (!node) { //do not exist make new
+    jrb_insert_int(graph.vertices,id,new_jval_i(name));
+      
+  } else { //exist
+    printf("Already exist\n");
+    printf("Modify ? (y/n)\n");
+    char c=getchar();__fpurge(stdin);
+    if (c=='y') jrb_insert_int(graph.vertices,id,new_jval_i(name));
+    else if (c=='n') {}
+    else printf("y or n\n");
+  }
 }
 
 int getVertex(Graph graph, int id) {
-  JRB node=jrb_find_gen(graph.vertices,new_jval_i(id),compare);
+  JRB node=jrb_find_int(graph.vertices,id);
   if (!node) //do not exist
     return -1;
   else return jval_i(node->val);
@@ -32,18 +38,18 @@ void addEdge(Graph graph, int v1, int v2,double weight) {
     printf("Add Vertex %d first\n",v2);
     return;
   }
-  //if (hasEdge(graph,v1,v2)==0) {
+  if (hasEdge(graph,v1,v2)==0) {
     JRB tree;
-    JRB node=jrb_find_gen(graph.edges,new_jval_i(v1),compare);
+    JRB node=jrb_find_int(graph.edges,v1);
     if (!node) {  //do not exist make new
       tree=make_jrb();
-      jrb_insert_gen(graph.edges,new_jval_i(v1),new_jval_v(tree),compare); //only insert v1 to graph.edges, v2 is not
-      jrb_insert_gen(tree,new_jval_i(v2),new_jval_d(weight),compare);
+      jrb_insert_int(graph.edges,v1,new_jval_v(tree)); //only insert v1 to graph.edges, v2 is not
+      jrb_insert_int(tree,v2,new_jval_d(weight));
     } else {      //already exist
       tree=(JRB)jval_v(node->val);
-      jrb_insert_gen(tree,new_jval_i(v2),new_jval_d(weight),compare);
+      jrb_insert_int(tree,v2,new_jval_d(weight));
     }
-    //}
+  }
 }
 
 int hasEdge(Graph graph, int v1, int v2) { //only edge from v1 to v2 (not from v2 to v1)
@@ -55,11 +61,11 @@ int hasEdge(Graph graph, int v1, int v2) { //only edge from v1 to v2 (not from v
     printf("Add Vertex %d first\n",v2);
     return 0;
   }
-  JRB node=jrb_find_gen(graph.edges,new_jval_i(v1),compare);
+  JRB node=jrb_find_int(graph.edges,v1);
   if (node) { // exist node v1 in graph.edges
     JRB tree;
     tree=(JRB)jval_v(node->val);
-    JRB node_tree=jrb_find_gen(tree,new_jval_i(v2),compare);
+    JRB node_tree=jrb_find_int(tree,v2);
     if (node_tree) //exist node v2 in tree(value of node v1 in graph.edges)
       return 1;//jval_i(node_tree->val);
     else return 0;
@@ -85,7 +91,7 @@ int outdegree(Graph graph, int v, int* output) { // output all vertices go out n
     printf("Add Vertex %d first\n",v);
     return 0;
   }
-  JRB node=jrb_find_gen(graph.edges,new_jval_i(v),compare);
+  JRB node=jrb_find_int(graph.edges,v);
   if (node) {
     JRB tree=(JRB)jval_v(node->val); //tree of all nodes from node v to them
     JRB node_traverse;
@@ -94,7 +100,7 @@ int outdegree(Graph graph, int v, int* output) { // output all vertices go out n
   }
   return total;
 }
-/*
+
 int DAG(Graph graph) { //1 is acyclic, 0 is not (have cycles)
   //number of node in graph
   int n=0;
@@ -137,7 +143,7 @@ int DAG(Graph graph) { //1 is acyclic, 0 is not (have cycles)
   free_dllist(stack);
   return 1;
 }
-*/
+
 void dropGraph(Graph graph) {
   if (!jrb_empty(graph.edges)) { //not empty
     JRB node;
@@ -147,7 +153,7 @@ void dropGraph(Graph graph) {
   jrb_free_tree(graph.edges);
   jrb_free_tree(graph.vertices);
 }
-/*
+
 void topologicalSort(Graph g,int *output,int *n) {
   // Queue
   int tmp[100],temp[100],indegreeOfNode[100],keyOfNode[100];
@@ -439,7 +445,7 @@ void DFS2(Graph g, int start, int stop, void (*func)(int)) {
   free_dllist(stack);
   jrb_free_tree(visited);
 }
-*/
+
 double getEdgeValue(Graph graph,int v1,int v2) { // return INFINITIVE_VALUE if no edge between v1 and v2
   if (getVertex(graph,v1)==-1) {
     printf("Add Vertex %d first\n",v1);
@@ -454,13 +460,13 @@ double getEdgeValue(Graph graph,int v1,int v2) { // return INFINITIVE_VALUE if n
     return INFINITIVE_VALUE;
   } else {
     JRB tree;
-    JRB node=jrb_find_gen(graph.edges,new_jval_i(v1),compare);
+    JRB node=jrb_find_int(graph.edges,v1);
     tree=(JRB)jval_v(node->val);
-    JRB node_tree=jrb_find_gen(tree,new_jval_i(v2),compare);
+    JRB node_tree=jrb_find_int(tree,v2);
     return jval_d(node_tree->val);
   }
 }
-/*
+
 double shortestPath(Graph graph, int s, int t, int* path, int* length) { // return the total weight of the path and the path is given via path and its length. Return INFINITIVE_VALUE if no path is found 
 
   //check existing
@@ -499,7 +505,7 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
   
   while (dll_empty(queue)!=1) { //not empty queue
     
-    //-------------Extract Min In Queue--------------//
+    /*-------------Extract Min In Queue--------------*/
     Dllist ptr;
     int id_min;
     double min=INFINITIVE_VALUE;
@@ -517,12 +523,12 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
       if (id_min==jval_i(ptr->val)) {dll_delete_node(ptr);break;}
       //printf("%d %d\n",id_min,jval_i(ptr->val));
     }
-    //-----------------------------------------------//
+    /*-----------------------------------------------*/
     
 
-    // stop if id_min is t (reached t with min d )
+    /* stop if id_min is t (reached t with min d )
        or min value of all remain elements in queue is infinitive 
-       (can not go in all remain elements, no path from s to t)  //
+       (can not go in all remain elements, no path from s to t)  */
     if (id_min==t || min==INFINITIVE_VALUE) break;
 
     
@@ -568,4 +574,3 @@ double shortestPath(Graph graph, int s, int t, int* path, int* length) { // retu
     return d;//jval_d(tmp->val);
   }
 }
-*/

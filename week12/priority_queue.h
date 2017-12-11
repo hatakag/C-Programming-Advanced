@@ -9,10 +9,12 @@
 
 typedef JRB Queue;
 
+int compare_insert(Jval a,Jval b);
+int compare_find(Jval a,Jval b);
 Queue priority_make_queue();
 void priority_enqueue(Queue queue,int key,JRB val);
 void priority_dequeue(Queue queue,int key);
-void priority_extract_min(Queue queue,int* key,JRB val);
+void priority_extract_min(Queue queue,int* key,JRB* val);
 void priority_free_queue(Queue queue);
 
 #endif
